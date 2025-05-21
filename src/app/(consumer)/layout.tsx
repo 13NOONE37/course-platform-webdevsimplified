@@ -22,7 +22,7 @@ function Navbar() {
     <header className="flex h-12 shadow bg-background z-10">
       <nav className="flex gap-4 container">
         <Link
-          className="mr-auto text-lg hover:underline px-2 flex items-center"
+          className="mr-auto text-lg hover:underline flex items-center"
           href={'/'}
         >
           Web Dev Simplified
@@ -31,13 +31,13 @@ function Navbar() {
           <SignedIn>
             <AdminLink />
             <Link
-              className="hover:bg-accent/10 flex items-center px-2"
+              className="hover:bg-accent/10 flex items-center"
               href={'/courses'}
             >
               My Courses
             </Link>
             <Link
-              className="hover:bg-accent/10 flex items-center px-2"
+              className="hover:bg-accent/10 flex items-center"
               href={'/purchases'}
             >
               Purchase History
