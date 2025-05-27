@@ -1,17 +1,24 @@
+import { ActionButton } from '@/components/ActionButton';
 import { PageHeader } from '@/components/PageHeader';
-import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { db } from '@/drizzle/db';
 import { CourseSectionTable, CourseTable, LessonTable } from '@/drizzle/schema';
 import { CourseForm } from '@/features/courses/components/CourseForm';
 import { getCourseIdTag } from '@/features/courses/db/cache/cache';
+import { SectionFormDialog } from '@/features/courseSections/components/SectionFormDialog';
 import { getCourseSectionCourseTag } from '@/features/courseSections/db/cache';
+import { deleteSection } from '@/features/courseSections/actions/sections';
 import { getLessonCourseTag } from '@/features/lessons/db/cache/lessons';
+import { cn } from '@/lib/utils';
 
 import { asc, eq } from 'drizzle-orm';
+import { EyeClosedIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { cacheTag } from 'next/dist/server/use-cache/cache-tag';
 import { notFound } from 'next/navigation';
+import { SortableSectionList } from '@/features/courseSections/components/SortableSectionList';
 
 export default async function EditCoursePage({
   params,
@@ -35,10 +42,20 @@ export default async function EditCoursePage({
           <Card>
             <CardHeader className="flex items-center flex-row justify-between">
               <CardTitle>Sections</CardTitle>
-              <SectionFormDialog>
-                <DialogTrigger></DialogTrigger>
+              <SectionFormDialog courseId={course.id}>
+                <DialogTrigger asChild>
+                  <Button variant="outline">
+                    <PlusIcon /> New Section
+                  </Button>
+                </DialogTrigger>
               </SectionFormDialog>
             </CardHeader>
+            <CardContent>
+              <SortableSectionList
+                sections={course.courseSections}
+                courseId={courseId}
+              />
+            </CardContent>
           </Card>
         </TabsContent>
         <TabsContent value="details">

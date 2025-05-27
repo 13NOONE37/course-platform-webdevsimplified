@@ -16,7 +16,7 @@ import { RequiredLabelIcon } from '@/components/RequiredLabelIcon';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { actionToast } from '@/hooks/actionToast';
-import { courseSectionStatuses } from '@/drizzle/schema';
+import { CourseSectionStatus, courseSectionStatuses } from '@/drizzle/schema';
 import {
   Select,
   SelectContent,
@@ -24,13 +24,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { createSection, updateSection } from '../actions/sections';
 
 export function SectionForm({
   section,
   courseId,
+  onSuccess,
 }: {
-  section?: { id: string; name: string; status: CourseSectionStatusn };
+  section?: { id: string; name: string; status: CourseSectionStatus };
   courseId: string;
+  onSuccess?: () => void;
 }) {
   const form = useForm<z.infer<typeof sectionSchema>>({
     resolver: zodResolver(sectionSchema),
@@ -42,10 +45,12 @@ export function SectionForm({
 
   async function onSubmit(values: z.infer<typeof sectionSchema>) {
     const action =
-      section == null ? createCourse : updateCourse.bind(null, course.id);
-
+      section == null
+        ? createSection.bind(null, courseId)
+        : updateSection.bind(null, section.id);
     const data = await action(values);
     actionToast({ actionData: data });
+    if (!data.error) onSuccess?.();
   }
 
   return (
