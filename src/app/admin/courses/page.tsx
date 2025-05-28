@@ -3,7 +3,7 @@ import { PageHeader } from '@/components/PageHeader';
 import Link from 'next/link';
 import { CourseTable } from '@/features/courses/components/CourseTable';
 import { cacheTag } from 'next/dist/server/use-cache/cache-tag';
-import { getCourseGlobalTag } from '@/features/courses/db/cache/cache';
+
 import { db } from '@/drizzle/db';
 import {
   CourseSectionTable,
@@ -15,6 +15,7 @@ import { asc, countDistinct, eq } from 'drizzle-orm';
 import { getUserCourseAccessGlobalTag } from '@/features/courses/db/cache/userCourseAccess';
 import { getCourseSectionGlobalTag } from '@/features/courseSections/db/cache';
 import { getLessonGlobalTag } from '@/features/lessons/db/cache/lessons';
+import { getCourseGlobalTag } from '@/features/courses/db/cache/cache';
 
 export default async function CoursesPage() {
   const courses = await getCourses();
@@ -22,7 +23,7 @@ export default async function CoursesPage() {
     <div className="container my-6">
       <PageHeader title="Courses">
         <Button asChild>
-          <Link href={'/admin/courses/new'}>New Course</Link>
+          <Link href="/admin/courses/new">New Course</Link>
         </Button>
       </PageHeader>
 
@@ -53,7 +54,7 @@ async function getCourses() {
       CourseSectionTable,
       eq(CourseSectionTable.courseId, DbCourseTable.id),
     )
-    .leftJoin(LessonTable, eq(LessonTable.sectionId, DbCourseTable.id))
+    .leftJoin(LessonTable, eq(LessonTable.sectionId, CourseSectionTable.id))
     .leftJoin(
       UserCourseAccessTable,
       eq(UserCourseAccessTable.courseId, DbCourseTable.id),
